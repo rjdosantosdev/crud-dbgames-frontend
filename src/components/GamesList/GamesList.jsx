@@ -1,11 +1,11 @@
 import React from "react";
-import axios from "axios";
+import api from "../../services/api";
 
 function GamesList() {
   const [dados, setDados] = React.useState(null);
   React.useEffect(() => {
-    axios
-      .get("http://localhost:3333/games")
+    api
+      .get("/games")
       .then((res) => {
         setDados(res.data);
       })

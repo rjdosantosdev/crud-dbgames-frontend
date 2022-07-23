@@ -1,6 +1,6 @@
 // modules
 import React from "react";
-import axios from "axios";
+import api from '../../services/api';
 
 // import Games from "../Games/Games";
 
@@ -25,11 +25,10 @@ function Home() {
 
   function handleClickButton() {
     const inputs = { Game: inputGame, Price: inputPrice, Category: inputCategory};
-    axios.post("http://localhost:3333/get", inputs)
+    api.post("/get", inputs)
     .then((res) => res.data(inputs))
     .catch(err => console.log(err))
   }
-    
   return (
     <ThemeProvider theme={theme}>
       <Container
