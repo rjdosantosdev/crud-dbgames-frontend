@@ -6,167 +6,175 @@ import styles from "./App.module.css";
 import GamesList from "./components/GamesLists/GamesList";
 
 // MUI
-import { Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Container,
+} from "@mui/material";
 
 // MODULES
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import schema from "./components/schemas/schema";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App(props) {
   // states
   const [listGames, setListGames] = React.useState(null);
-  function handleSubmit(values) {
-    api.post("/send", values).then((response) => {
-      if (response.data === true) {
-        setListGames([
-          ...listGames,
-          {
-            game: response.values.game,
-            cost: response.values.cost,
-            category: response.values.category,
-          },
-        ]);
-        toast.success("Cadastro realizado com sucesso!", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-      } else {
-        toast.error("Erro ao preencher os campos!", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-      }
-    });
+  const [Generos, setGeneros] = React.useState("");
+
+  // inputs
+  const [jogo, setJogo] = React.useState("");
+  const [preco, setPreco] = React.useState("");
+  const [newGeneros, setNewGeneros] = React.useState("");
+
+  function handleSubmitValues() {
+    api
+      .post("/send", {
+        jogo: jogo,
+        preco: preco,
+        newGenero: newGeneros,
+      })
+      .then((response) => {
+        if (response.data === true) {
+          console.log(response.data);
+          toast.success("Cadastro realizado com sucesso!", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+        } else {
+          console.log(response.data);
+          toast.error("Erro ao preencher os campos!", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+        }
+      });
   }
 
   React.useEffect(() => {
     api
       .get("/")
-      .then((res) => {
-        setListGames(res.data);
+      .then((response) => {
+        setListGames(response.data);
+      })
+      .catch((error) => console.log(error));
+
+    api
+      .get("/generos")
+      .then((response) => {
+        setGeneros(response.data);
       })
       .catch((error) => console.log(error));
   }, []);
+
+  function handleChange(event) {
+    setNewGeneros(event.target.value);
+  }
   return (
-    <>
+    <div>
       <div className={styles.module}>
         <ToastContainer />
-        <Formik
-          validationSchema={schema}
-          onSubmit={handleSubmit}
-          initialValues={{
-            game: "",
-            cost: "",
-            category: "",
+
+        <Typography
+          sx={{ marginBottom: 4, marginTop: 8 }}
+          variant="h4"
+          component="h2"
+          textAlign="center"
+        >
+          Criar novo jogo
+        </Typography>
+
+        <Container
+          sx={{
+            width: "400px",
           }}
         >
-          {({ values }) => (
-            <Form>
-              <Typography
-                sx={{ marginBottom: 4, marginTop: 8 }}
-                variant="h4"
-                component="h2"
-                textAlign="center"
+          {/* <form> */}
+          <Box>
+            <TextField
+              fullWidth
+              label="Nome do jogo"
+              name="jogo"
+              id="jogo"
+              type="text"
+              margin="dense"
+              onChange={(e) => setJogo(e.target.value)}
+            />
+
+            <TextField
+              fullWidth
+              label="Preço"
+              name="preco"
+              id="preco"
+              type="number"
+              margin="dense"
+              sx={{ marginBottom: "10px" }}
+              onChange={(e) => setPreco(e.target.value)}
+            />
+          </Box>
+          <Box sx={{ minWidth: 120 }}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-standard-label">
+                Gênero
+              </InputLabel>
+              <Select
+                fullWidth
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={newGeneros}
+                label="Gênero"
+                onChange={handleChange}
               >
-                Criar novo jogo
-              </Typography>
-              <Box container maxWidth={400} margin="0 auto" height="65vh">
-                <Field
-                  as={TextField}
-                  fullWidth
-                  name="game"
-                  id="game"
-                  label="Nome do Jogo"
-                  type="text"
-                  margin="dense"
-                  value={props.newgame}
-                />
+                {Generos &&
+                  Generos.map((i) => {
+                    return (
+                      <MenuItem
+                        margin="normal"
+                        key={i.id_genero}
+                        value={i.id_genero}
+                      >
+                        {i.genero}
+                      </MenuItem>
+                    );
+                  })}
+              </Select>
+            </FormControl>
+          </Box>
 
-                <Box mt={0.75}>
-                  <Typography
-                    width={400}
-                    component="h6"
-                    variant="caption"
-                    color="error"
-                    fontWeight="regular"
-                  >
-                    <ErrorMessage name="game" />
-                  </Typography>
-                </Box>
-
-                <Field
-                  fullWidth
-                  as={TextField}
-                  label="Preço"
-                  name="cost"
-                  id="cost"
-                  type="number"
-                  margin="dense"
-                />
-                <Box mt={0.75}>
-                  <Typography
-                    width={400}
-                    component="h6"
-                    variant="caption"
-                    color="error"
-                    fontWeight="regular"
-                  >
-                    <ErrorMessage name="cost" />
-                  </Typography>
-                </Box>
-                <Field
-                  as={TextField}
-                  fullWidth
-                  label="Categoria"
-                  name="category"
-                  id="category"
-                  type="text"
-                  margin="dense"
-                />
-                <Box mt={0.75}>
-                  <Typography
-                    width={400}
-                    component="h6"
-                    variant="caption"
-                    color="error"
-                    fontWeight="regular"
-                  >
-                    <ErrorMessage name="category" />
-                  </Typography>
-                </Box>
-                <Button
-                  fullWidth
-                  margin="dense"
-                  type="submit"
-                  size="large"
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2, fontSize: 18 }}
-                >
-                  Cadastrar
-                </Button>
-              </Box>
-            </Form>
-          )}
-        </Formik>
+          <Button
+            onClick={handleSubmitValues}
+            fullWidth
+            margin="dense"
+            type="submit"
+            size="large"
+            variant="contained"
+            sx={{ mt: 3, mb: 2, fontSize: 18 }}
+          >
+            Cadastrar
+          </Button>
+          {/* </form> */}
+        </Container>
       </div>
-
       <div>
         {listGames &&
           listGames.map((value) => {
             return (
               <GamesList
-                key={value.id}
+                key={value.id_jogo}
                 listGames={listGames}
                 setListGames={setListGames}
-                id={value.id}
-                game={value.game}
-                cost={value.cost}
-                category={value.category}
+                idjogo={value.id_jogo}
+                game={value.jogo}
+                cost={value.preco}
+                genero={value.genero}
               />
             );
           })}
       </div>
-    </>
+    </div>
   );
 }
 

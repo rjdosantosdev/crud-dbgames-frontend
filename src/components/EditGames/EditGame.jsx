@@ -8,7 +8,6 @@ import { TextField } from "@mui/material";
 import { Box } from "@mui/material";
 import api from "../../services/api";
 import { toast } from "react-toastify";
-import GamesList from "../GamesLists/GamesList";
 
 export default function EditGame(props) {
   const [editValues, setEditValues] = React.useState({

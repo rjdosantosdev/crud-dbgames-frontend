@@ -1,5 +1,4 @@
 import React from "react";
-import api from "../../services/api";
 // MUI
 import { Box, Button, Card, Container } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -20,10 +19,11 @@ function GamesList(props) {
       <EditGames
         open={open}
         setOpen={setOpen}
-        id={props.id}
+        idjogo={props.id_jogo}
         game={props.game}
         cost={props.cost}
-        category={props.category}
+        genero={props.genero}
+        idgenero={props.genero}
       />
       <Box sx={{ marginTop: "60px" }}>
         <Container maxWidth="sm">
@@ -37,10 +37,11 @@ function GamesList(props) {
           >
             <ul style={{ padding: "20px" }}>
               <li>
-                <span>{props.id}</span>
                 <h3>{props.game}</h3>
+                <span>{props.idjogo}</span>
                 <p>{props.cost}</p>
-                <p>{props.category}</p>
+                <h1>{props.genero}</h1>
+                <span>{props.idgenero}</span>
               </li>
             </ul>
             <Box
