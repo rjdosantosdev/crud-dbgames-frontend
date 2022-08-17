@@ -6,6 +6,7 @@ import styles from "./App.module.css";
 import GamesList from "./components/GamesLists/GamesList";
 
 // MUI
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import {
   Box,
   Button,
@@ -31,6 +32,11 @@ function App(props) {
   const [jogo, setJogo] = React.useState("");
   const [preco, setPreco] = React.useState("");
   const [newGeneros, setNewGeneros] = React.useState("");
+
+  // estado pra gerenciar os inputs autocomplete
+  const [newValue, setNewValue] = React.useState(null);
+
+  const filter = createFilterOptions();
 
   function handleSubmitValues() {
     api
@@ -92,7 +98,6 @@ function App(props) {
             width: "400px",
           }}
         >
-          {/* <form> */}
           <Box>
             <TextField
               fullWidth
@@ -115,7 +120,7 @@ function App(props) {
               onChange={(e) => setPreco(e.target.value)}
             />
           </Box>
-          <Box sx={{ minWidth: 120 }}>
+          {/* <Box sx={{ minWidth: 120 }}>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-standard-label">
                 Gênero
@@ -142,6 +147,64 @@ function App(props) {
                   })}
               </Select>
             </FormControl>
+          </Box> */}
+
+          <Box>
+            <Autocomplete
+              fullWidth
+              value={newValue}
+              selectOnFocus
+              clearOnBlur
+              options={Generos}
+              onChange={(event, novoValor) => {
+                if (typeof newValue === "string") {
+                  setNewValue({
+                    genero: novoValor,
+                  });
+                } else if (novoValor && novoValor.inputValue) {
+                  setNewValue({
+                    genero: novoValor.inputValue,
+                  });
+                } else {
+                  setNewValue(novoValor);
+                }
+              }}
+              getOptionLabel={(option) => {
+                // Value selected with enter, right from the input
+                if (typeof option === "string") {
+                  return option;
+                }
+                // Add "xxx" option created dynamically
+                if (option.inputValue) {
+                  return option.inputValue;
+                }
+                // Regular option
+                return option.genero;
+              }}
+              renderOption={(props, option) => (
+                <li {...props}>{option.genero}</li>
+              )}
+              filterOptions={(options, params) => {
+                const filtered = filter(options, params);
+                const { inputValue } = params;
+                const isExisting = options.some(
+                  (option) => inputValue === option.genero
+                );
+                if (inputValue !== "" && !isExisting) {
+                  filtered.push({
+                    inputValue,
+                    genero: `Adicionar: "${inputValue}"`,
+                  });
+                }
+                return filtered;
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Pesquise ou cadastre novos generos"
+                />
+              )}
+            />
           </Box>
 
           <Button
@@ -155,7 +218,6 @@ function App(props) {
           >
             Cadastrar
           </Button>
-          {/* </form> */}
         </Container>
       </div>
       <div>
