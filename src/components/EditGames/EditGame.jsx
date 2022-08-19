@@ -1,11 +1,23 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import { TextField } from "@mui/material";
-import { Box } from "@mui/material";
+import {
+  Button,
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
+// import Dialog from "@mui/material/Dialog";
+// import DialogActions from "@mui/material/DialogActions";
+// import DialogContent from "@mui/material/DialogContent";
+// import DialogTitle from "@mui/material/DialogTitle";
+// import { TextField } from "@mui/material";
+
 import api from "../../services/api";
 import { toast } from "react-toastify";
 
@@ -22,6 +34,10 @@ export default function EditGame(props) {
       [value.target.id]: value.target.value,
     }));
   }
+
+  function handleChange(event) {
+    props.setNewGeneros(event.target.value);
+  }
   async function handleEditGames() {
     await api
       .put("/edit", {
@@ -34,7 +50,8 @@ export default function EditGame(props) {
         toast.success("Dados alterados com sucesso!", {
           position: toast.POSITION.TOP_RIGHT,
         });
-      });
+      })
+      .catch((err) => console.log(err));
     handleClose();
   }
 

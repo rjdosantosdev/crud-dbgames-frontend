@@ -23,7 +23,7 @@ import {
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function App(props) {
+function App() {
   // states
   const [listGames, setListGames] = React.useState(null);
   const [Generos, setGeneros] = React.useState("");
@@ -35,7 +35,6 @@ function App(props) {
 
   // estado pra gerenciar os inputs autocomplete
   const [newValue, setNewValue] = React.useState(null);
-
   const filter = createFilterOptions();
 
   function handleSubmitValues() {
@@ -43,16 +42,26 @@ function App(props) {
       .post("/send", {
         jogo: jogo,
         preco: preco,
+        genero: newValue.genero,
         newGenero: newGeneros,
+        idgenero: newValue.id_genero,
       })
       .then((response) => {
-        if (response.data === true) {
-          console.log(response.data);
+        if (response.status >= 200 && response.status <= 400) {
+          console.log(response);
           toast.success("Cadastro realizado com sucesso!", {
             position: toast.POSITION.TOP_RIGHT,
           });
+          const newGame = {
+            jogo: jogo,
+            preco: preco,
+            genero: newValue.genero,
+            idgenero: newValue.id_genero,
+          };
+          setListGames([...listGames, newGame]);
         } else {
           console.log(response.data);
+          console.log(response);
           toast.error("Erro ao preencher os campos!", {
             position: toast.POSITION.TOP_RIGHT,
           });
@@ -232,6 +241,8 @@ function App(props) {
                 game={value.jogo}
                 cost={value.preco}
                 genero={value.genero}
+                Generos={Generos}
+                setGeneros={setGeneros}
               />
             );
           })}
