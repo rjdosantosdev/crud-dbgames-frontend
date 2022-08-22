@@ -2,10 +2,14 @@ import React from "react";
 // MUI
 import { Box, Button, Card, Container } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-// import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 // Components
 import EditGames from "../../components/EditGames/EditGame";
+
+// MODULES
+// import api from "../../services/api";
+// import { toast } from "react-toastify";
 
 function GamesList(props) {
   const [open, setOpen] = React.useState(false);
@@ -19,11 +23,11 @@ function GamesList(props) {
       <EditGames
         open={open}
         setOpen={setOpen}
-        idjogo={props.id_jogo}
-        game={props.game}
-        cost={props.cost}
+        idjogo={props.idjogo}
+        idgenero={props.idgenero}
         genero={props.genero}
-        idgenero={props.genero}
+        jogo={props.jogo}
+        preco={props.preco}
       />
       <Box sx={{ marginTop: "60px" }}>
         <Container maxWidth="sm">
@@ -32,16 +36,16 @@ function GamesList(props) {
               display: "flex",
               justifyContent: "space-between",
               borderBottom: "2px solid #F4EFEE",
-              padding: "7px 0",
+              padding: "10px 0",
             }}
           >
             <ul style={{ padding: "20px" }}>
               <li>
-                <h3>{props.game}</h3>
-                <span>{props.idjogo}</span>
-                <p>{props.cost}</p>
-                <h1>{props.genero}</h1>
-                <span>{props.idgenero}</span>
+                <h1>{props.jogo}</h1>
+                <h3>{props.genero}</h3>
+                <h4>R$ {props.preco}</h4>
+                <p>id do jogo: {props.idjogo}</p>
+                <p>id do genero: {props.idgenero}</p>
               </li>
             </ul>
             <Box
@@ -53,16 +57,19 @@ function GamesList(props) {
               <Button
                 onClick={handleClickCard}
                 sx={{
-                  Cursor: "pointer",
-                  fontSize: "22",
                   border: "none",
+                  padding: "5px",
+                  minWidth: "40px",
                 }}
               >
                 <EditIcon />
               </Button>
-              {/* <Button onClick={handleDeleteGame}>
+              <Button
+                // onClick={handleDeleteGame}
+                sx={{ padding: "5px", minWidth: "40px" }}
+              >
                 <DeleteIcon />
-              </Button> */}
+              </Button>
             </Box>
           </Card>
         </Container>

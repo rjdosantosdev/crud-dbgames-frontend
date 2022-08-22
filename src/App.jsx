@@ -22,6 +22,7 @@ import {
 // MODULES
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import EditGame from "./components/EditGames/EditGame";
 
 function App() {
   // states
@@ -31,7 +32,6 @@ function App() {
   // inputs
   const [jogo, setJogo] = React.useState("");
   const [preco, setPreco] = React.useState("");
-  const [newGeneros, setNewGeneros] = React.useState("");
 
   // estado pra gerenciar os inputs autocomplete
   const [newValue, setNewValue] = React.useState(null);
@@ -43,7 +43,6 @@ function App() {
         jogo: jogo,
         preco: preco,
         genero: newValue.genero,
-        newGenero: newGeneros,
         idgenero: newValue.id_genero,
       })
       .then((response) => {
@@ -58,7 +57,6 @@ function App() {
             genero: newValue.genero,
             idgenero: newValue.id_genero,
           };
-          setListGames([...listGames, newGame]);
         } else {
           console.log(response.data);
           console.log(response);
@@ -85,11 +83,12 @@ function App() {
       .catch((error) => console.log(error));
   }, []);
 
-  function handleChange(event) {
-    setNewGeneros(event.target.value);
-  }
+  // function handleChange(event) {
+  //   setNewGeneros(event.target.value);
+  // }
   return (
     <div>
+      <EditGame listGames={listGames} />
       <div className={styles.module}>
         <ToastContainer />
 
@@ -238,8 +237,9 @@ function App() {
                 listGames={listGames}
                 setListGames={setListGames}
                 idjogo={value.id_jogo}
-                game={value.jogo}
-                cost={value.preco}
+                idgenero={value.id_genero}
+                jogo={value.jogo}
+                preco={value.preco}
                 genero={value.genero}
                 Generos={Generos}
                 setGeneros={setGeneros}
