@@ -19,14 +19,24 @@ import GamesList from "../GamesLists/GamesList";
 import api from "../../services/api";
 import { toast } from "react-toastify";
 
-export default function EditGame(props) {
-  console.log(props);
+export default function EditGame({
+  genero,
+  jogo,
+  preco,
+  idgenero,
+  idjogo,
+  listGames,
+  setListGames,
+  open,
+  setOpen,
+  updateStates,
+}) {
   const [editValues, setEditValues] = React.useState({
-    idjogo: props.idjogo,
-    idgenero: props.idgenero,
-    jogo: props.jogo,
-    preco: props.preco,
-    genero: props.genero,
+    idjogo: idjogo,
+    idgenero: idgenero,
+    jogo: jogo,
+    preco: preco,
+    genero: genero,
   });
 
   function handleChangeValues(value) {
@@ -50,6 +60,7 @@ export default function EditGame(props) {
           toast.success("Dados alterados com sucesso!", {
             position: toast.POSITION.TOP_RIGHT,
           });
+          updateStates();
         }
       })
       .catch((err) => console.log(err));
@@ -57,22 +68,34 @@ export default function EditGame(props) {
   }
 
   const handleClose = () => {
-    props.setOpen(false);
+    setOpen(false);
   };
 
   // deletar os items
   async function handleDeleteGame() {
-    await api.delete(`/delete/${editValues.id}`).then((response, request) =>
-      toast.success("Jogo deletado com sucesso!", {
-        position: toast.POSITION.TOP_RIGHT,
-      })
-    );
+    await api
+      .delete(`/delete/${editValues.idjogo}`)
+      .then((response, request) => {
+        toast.success("Jogo deletado com sucesso!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        handleClose();
+        const newGame = {
+          idjogo: editValues.idjogo,
+          idgenero: editValues.idgenero,
+          jogo: editValues.jogo,
+          preco: editValues.preco,
+          genero: editValues.genero,
+        };
+
+        setListGames([...listGames]);
+      });
   }
 
   return (
     <>
       <Dialog
-        open={props.open}
+        open={open}
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
@@ -86,7 +109,7 @@ export default function EditGame(props) {
               id="jogo"
               type="text"
               margin="dense"
-              defaultValue={props.jogo}
+              defaultValue={jogo}
               onChange={handleChangeValues}
             />
             <TextField
@@ -96,7 +119,7 @@ export default function EditGame(props) {
               id="preco"
               type="number"
               margin="dense"
-              defaultValue={props.preco}
+              defaultValue={preco}
               onChange={handleChangeValues}
             />
             <TextField
@@ -106,7 +129,7 @@ export default function EditGame(props) {
               id="genero"
               type="text"
               margin="dense"
-              defaultValue={props.genero}
+              defaultValue={genero}
               onChange={handleChangeValues}
             />
           </Box>
@@ -114,6 +137,9 @@ export default function EditGame(props) {
         <DialogActions>
           <Button autoFocus onClick={handleClose}>
             Cancelar
+          </Button>
+          <Button onClick={handleDeleteGame} autoFocus>
+            Deletar
           </Button>
           <Button onClick={handleEditGames} autoFocus>
             Salvar

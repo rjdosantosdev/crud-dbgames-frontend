@@ -22,11 +22,13 @@ import {
 // MODULES
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import EditGame from "./components/EditGames/EditGame";
+
+// COMPONENTS
+import EditGames from "./components/EditGames/EditGame";
 
 function App() {
   // states
-  const [listGames, setListGames] = React.useState(null);
+  const [listGames, setListGames] = React.useState([]);
   const [Generos, setGeneros] = React.useState("");
 
   // inputs
@@ -36,6 +38,19 @@ function App() {
   // estado pra gerenciar os inputs autocomplete
   const [newValue, setNewValue] = React.useState(null);
   const filter = createFilterOptions();
+
+  // funcao para atualizar todas os estados
+  function updateStates() {
+    const newGame = {
+      jogo: jogo,
+      preco: preco,
+      genero: newValue.genero,
+      idgenero: newValue.id_genero,
+    };
+    setListGames([...listGames, newGame]);
+    setGeneros([...Generos, newGame]);
+    setNewValue([...newValue, newGame]);
+  }
 
   function handleSubmitValues() {
     api
@@ -51,12 +66,7 @@ function App() {
           toast.success("Cadastro realizado com sucesso!", {
             position: toast.POSITION.TOP_RIGHT,
           });
-          const newGame = {
-            jogo: jogo,
-            preco: preco,
-            genero: newValue.genero,
-            idgenero: newValue.id_genero,
-          };
+          updateStates();
         } else {
           console.log(response.data);
           console.log(response);
@@ -88,7 +98,7 @@ function App() {
   // }
   return (
     <div>
-      <EditGame listGames={listGames} />
+      <EditGames updateStates={updateStates} />
       <div className={styles.module}>
         <ToastContainer />
 
@@ -128,34 +138,6 @@ function App() {
               onChange={(e) => setPreco(e.target.value)}
             />
           </Box>
-          {/* <Box sx={{ minWidth: 120 }}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-standard-label">
-                Gênero
-              </InputLabel>
-              <Select
-                fullWidth
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                value={newGeneros}
-                label="Gênero"
-                onChange={handleChange}
-              >
-                {Generos &&
-                  Generos.map((i) => {
-                    return (
-                      <MenuItem
-                        margin="normal"
-                        key={i.id_genero}
-                        value={i.id_genero}
-                      >
-                        {i.genero}
-                      </MenuItem>
-                    );
-                  })}
-              </Select>
-            </FormControl>
-          </Box> */}
 
           <Box>
             <Autocomplete
@@ -234,15 +216,13 @@ function App() {
             return (
               <GamesList
                 key={value.id_jogo}
-                listGames={listGames}
-                setListGames={setListGames}
                 idjogo={value.id_jogo}
                 idgenero={value.id_genero}
                 jogo={value.jogo}
                 preco={value.preco}
                 genero={value.genero}
-                Generos={Generos}
-                setGeneros={setGeneros}
+                listGames={listGames}
+                setListGames={setListGames}
               />
             );
           })}
